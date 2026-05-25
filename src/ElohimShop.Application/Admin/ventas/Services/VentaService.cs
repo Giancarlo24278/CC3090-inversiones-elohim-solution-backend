@@ -112,8 +112,10 @@ public class VentaService : IVentaService
 
     public async Task<VentaDto> CrearVentaAsync(VentaDto venta)
     {
-        _ventas.Add(venta);
+    venta.Total = venta.Subtotal - venta.Descuento;
 
-        return await Task.FromResult(venta);
-    }
+    _ventas.Add(venta);
+
+    return await Task.FromResult(venta);
+}
 }
