@@ -101,13 +101,37 @@ public class VentaService : IVentaService
 
     public async Task<VentaDashboardDto> ObtenerDashboardAsync()
     {
-        return await Task.FromResult(new VentaDashboardDto
-        {
-            VentasHoy = 5,
-            IngresosHoy = 883.90m,
-            TicketPromedio = 176.78m,
-            ProductosVendidos = 20
-        });
+    var ventasHoy = _ventas;
+
+    var totalVentas = ventasHoy.Count;
+
+    var ingresosHoy = ventasHoy.Sum(v => v.Total);
+
+    var ticketPromedio = totalVentas > 0
+        ? ingresosHoy / totalVentas
+        : 0;
+
+    var productosVendidos = ventasHoy.Sum(v => v.Productos);
+
+    var totalDescuentos = ventasHoy.Sum(v => v.Descuento);
+
+    var metodoPagoMasUsado = ventasHoy
+        .GroupBy(v => v.MetodoPago)
+        .OrderByDescending(g => g.Count())
+        .Select(g => g.Key)
+        .FirstOrDefault() ?? "N/A";
+
+    var dashboard = new VentaDashboardDto
+    {
+        VentasHoy = totalVentas,
+        IngresosHoy = ingresosHoy,
+        TicketPromedio = decimal.Round(ticketPromedio, 2),
+        ProductosVendidos = productosVendidos,
+        TotalDescuentos = totalDescuentos,
+        MetodoPagoMasUsado = metodoPagoMasUsado
+    };
+
+    return await Task.FromResult(dashboard);
     }
 
     public async Task<VentaDto> CrearVentaAsync(VentaDto venta)

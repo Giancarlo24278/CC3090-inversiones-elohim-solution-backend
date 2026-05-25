@@ -9,4 +9,8 @@ public class VentaDashboardDto
     public decimal TicketPromedio { get; set; }
 
     public int ProductosVendidos { get; set; }
+
+    public decimal TotalDescuentos { get; set; }
+
+    public string MetodoPagoMasUsado { get; set; } = string.Empty;
 }
