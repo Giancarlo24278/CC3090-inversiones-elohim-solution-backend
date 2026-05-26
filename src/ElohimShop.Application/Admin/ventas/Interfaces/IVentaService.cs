@@ -14,4 +14,6 @@ public interface IVentaService
     Task<VentaDashboardDto> ObtenerDashboardAsync();
 
     Task<VentaDto> CrearVentaAsync(VentaDto venta);
+
+    Task<byte[]> ExportarVentasCsvAsync();
 }

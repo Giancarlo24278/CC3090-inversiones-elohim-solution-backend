@@ -54,12 +54,16 @@ public class VentasController : ControllerBase
 
     // GET /api/ventas/export
     [HttpGet("export")]
-    public IActionResult ExportarVentas()
+    public async Task<IActionResult> ExportarVentas()
     {
-        return Ok(new
-        {
-            mensaje = "Exportando ventas..."
-        });
+    var archivo = await _ventaService
+        .ExportarVentasCsvAsync();
+
+    return File(
+        archivo,
+        "text/csv",
+        $"ventas-{DateTime.Now:yyyyMMddHHmmss}.csv"
+    );
     }
 
     // GET /api/ventas/:id/detalle

@@ -1,6 +1,7 @@
 using ElohimShop.Application.Admin.Ventas.DTOs;
 using ElohimShop.Application.Admin.Ventas.Filters;
 using ElohimShop.Application.Admin.Ventas.Interfaces;
+using System.Text;
 
 namespace ElohimShop.Application.Admin.Ventas.Services;
 
@@ -141,5 +142,34 @@ public class VentaService : IVentaService
     _ventas.Add(venta);
 
     return await Task.FromResult(venta);
-}
+    }
+    public async Task<byte[]> ExportarVentasCsvAsync()
+    {
+    var csv = new StringBuilder();
+
+    // Header CSV
+    csv.AppendLine(
+        "ID,Cliente,Productos,Subtotal,Descuento,Total,Fecha,MetodoPago,Empleado"
+    );
+
+    // Filas
+    foreach (var venta in _ventas)
+    {
+        csv.AppendLine(
+            $"{venta.Id}," +
+            $"{venta.Cliente}," +
+            $"{venta.Productos}," +
+            $"{venta.Subtotal}," +
+            $"{venta.Descuento}," +
+            $"{venta.Total}," +
+            $"{venta.Fecha}," +
+            $"{venta.MetodoPago}," +
+            $"{venta.Empleado}"
+        );
+    }
+
+    return await Task.FromResult(
+        Encoding.UTF8.GetBytes(csv.ToString())
+    );
+    }
 }
